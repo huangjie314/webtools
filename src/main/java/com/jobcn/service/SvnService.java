@@ -6,8 +6,6 @@ import java.util.Map;
  * Created by winson on 17-5-26.
  */
 public interface SvnService {
-
-
     /**
      * 验证账号密码
      * @param author
