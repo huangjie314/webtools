@@ -3,11 +3,13 @@
 ②基于IDEA开发,请自行测试其他IDE
 
 ### 打包和运行方式
-③打包命令
-gradle build -x text
-④启动命令(svntool-1.0.jar 为jar包的名,根据配置文件修改)  
-java -jar svntool-1.0.jar --spring.profiles.active=prod 
-⑤端口:8888(可在配置文件修改)
+①打包命令  
+gradle build -x text  
+
+②启动命令(svntool-1.0.jar 为jar包的名,根据配置文件修改)    
+java -jar svntool-1.0.jar --spring.profiles.active=prod   
+
+③端口:8888(可在配置文件修改)  
 
 ### 开发日志:  
 ##### 2017.06.01
