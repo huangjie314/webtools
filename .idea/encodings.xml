@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/src/main/java/com/jobcn/service/SvnServiceImpl.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/build.gradle" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jobcn/config/LoginInterceptor.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jobcn/config/SvnProperties.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jobcn/config/XMLConfig.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jobcn/service/SvnService.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jobcn/service/SvnServiceImpl.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/setting.json" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/static/js/test.js" charset="UTF-8" />
     <file url="PROJECT" charset="GBK" />
   </component>
 </project>

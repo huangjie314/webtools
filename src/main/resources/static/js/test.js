@@ -36,19 +36,27 @@ $(document).ready(function () {
         location.href = "/query?path=BizOpp,Common";
     });
 
-    $("table").on('click', '.copy', function () {
-        $("#info").trigger('select');
-        document.execCommand("copy");
-        alert('ok');
+    $("#logout").click(function () {
+        location.href = "/doLogout";
     });
 
-//∑¢ÀÕ” º˛
+    //Â§çÂà∂
+    $("table").on('click', '.copy', function () {
+        var $this = $(this);
+        var title = $this.closest('tr').find(".msg").text();
+        var context = title + '\n' + $this.closest('tr').find(".path").text();
+       //TODO Â§çÂà∂
+        alert(context);
+    });
+
+//ÂèëÈÄÅÈÇÆ‰ª∂
     $("table").on('click', '.send', function () {
         var $this = $(this);
         var email = '8999@jobcn.com';
         var title = $this.closest('tr').find(".msg").text();
-        var email_text = title+'<br/>'+$this.closest('tr').find(".path").text();
-        var url = "mailto:" + email + "?subject=" + title + "&body=" + email_text;
+        var context = title + '</br>' + $this.closest('tr').find(".path").text();
+        context = context.replace(/\n/g, "</br>")
+        var url = "mailto:" + email + "?subject=" + title + "&body=" + context;
         var aTarget = $this.find("a");
         aTarget[0].href = url;
         aTarget.trigger("click");

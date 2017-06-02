@@ -5,7 +5,7 @@
   "/JobcnX/trunk/src": "/web-person/WEB-INF/classes",
   "/JobcnX/Employer/trunk/src": "/web-employer/WEB-INF/classes",
   "/JobcnX/weihu/trunk/src": "/web-weihu/WEB-INF/classes",
-  "/JobcnX/util/src": ["/web-person/WEB-INF/classes","/web-employer/WEB-INF/classes","/web-weihu/WEB-INF/classes"],
+  "/JobcnX/util/src": ["/web-person/WEB-INF/classes","/web-employer/WEB-INF/classes"],
   "/BizOpp/Maintenance/trunk/web": "/web-maintenance",
   "/BizOpp/ForeGround/trunk/web": "/web-foreground",
   "/BizOpp/MerchantCenter/trunk/web": "/web-merchantcenter",

@@ -6,12 +6,22 @@ import java.util.Map;
  * Created by winson on 17-5-26.
  */
 public interface SvnService {
+
+
     /**
-     * ²éÑ¯
-     * @param num ²éÑ¯Ç°¶àÉÙÌõ
-     * @param Path  ÏîÄ¿Â·¾¶(Ö»ĞèÒª¶Ë¿ÚÒÔºóµÄÂ·¾¶)
-     * @param author ²éÑ¯µÄ×÷Õß
+     * éªŒè¯è´¦å·å¯†ç 
+     * @param author
+     * @param password
      * @return
      */
-    Map<String,Object> query(Integer num, String Path, String author);
+    boolean login(String author,String password);
+
+    /**
+     * æŸ¥è¯¢
+     * @param num æŸ¥è¯¢å‰å¤šå°‘æ¡
+     * @param Path  é¡¹ç›®è·¯å¾„(åªéœ€è¦ç«¯å£ä»¥åçš„è·¯å¾„)
+     * @param author æŸ¥è¯¢çš„ä½œè€…
+     * @return
+     */
+    Map<String,Object> query(Integer num, String Path, String author,String password);
 }

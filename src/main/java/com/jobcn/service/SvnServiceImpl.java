@@ -1,7 +1,9 @@
 package com.jobcn.service;
 
 import com.alibaba.fastjson.JSON;
+import com.jobcn.WebApplication;
 import com.jobcn.config.SvnProperties;
+import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -24,48 +28,68 @@ public class SvnServiceImpl implements SvnService {
     static private Map<String, Object> setting = null;
 
     @Override
-    public Map<String, Object> query(Integer num, String path, String author) {
+    public boolean login(String author, String password) {
+        String cmd = "svn log svn://" + svnProperties.getUrl() + " -l 1 -v --xml";
+        cmd = cmd + " --username " + author + " --password " + password;
+        String xml = exeCommond(cmd);
+        //<?xml version="1.0" encoding="UTF-8"?><log>  è´¦å·å¯†ç ä¸æ­£ç¡®è¿”å›çš„æ ¼å¼
+        if (!"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Map<String, Object> query(Integer num, String path, String author, String password) {
         Map<String, Object> map = new HashMap<String, Object>();
-        //svn log svn://192.168.61.155:11001 -l 100 -v --xml --username JCNEP7340 --password vincent
+        //svn log svn://192.168.61.155:11001 -l 100 -v --xml --username JCNEP7340 --password vincent -r{2016-06-27T12:00:00}:{2016-06-28T13:00:00}
+
+
         String cmd = "svn log svn://" + svnProperties.getUrl() + "/";
-        //ÎÄ¼şÂ·¾¶
+        //æ–‡ä»¶è·¯å¾„
         if (path != null && !"".equals(path)) {
             path = path.replaceFirst(",", "/");
             cmd = cmd + path + "/";
         }
-        //ÊıÁ¿
+        //æ•°é‡
         if (num == null || num == 0) {
-            cmd = cmd + " -l 100 -v --xml ";
+            cmd = cmd + " -l 300 -v --xml ";
         } else {
             cmd = cmd + " -l " + num + " -v --xml ";
         }
-        cmd = cmd + " --username " + svnProperties.getUsername() + " --password " + svnProperties.getPassword();
+        cmd = cmd + " --username " + author + " --password " + password;
         if (author != null && !"".equals(author)) {
             if (!author.startsWith("JCNEP"))
-                author="JCNEP"+author;
+                author = "JCNEP" + author;
             cmd = cmd + " --search " + author;
         }
         String xml = exeCommond(cmd);
+        //<?xml version="1.0" encoding="UTF-8"?><log>  è´¦å·å¯†ç ä¸æ­£ç¡®è¿”å›çš„æ ¼å¼
+        if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)){
+            return map;
+        }
         List<Map<String, Object>> list = null;
         try {
             list = xml2list(xml);
         } catch (DocumentException e) {
             e.printStackTrace();
         }
-        map.put("list", list);
-        List<String> authors = new ArrayList<>();
-        for (Map<String, Object> row : list) {
-            if (!authors.contains(row.get("author").toString())) {
-                authors.add(row.get("author").toString());
+        if (list != null) {
+            map.put("list", list);
+            List<String> authors = new ArrayList();
+            for (Map<String, Object> row : list) {
+                if (!authors.contains(row.get("author").toString())) {
+                    authors.add(row.get("author").toString());
+                }
             }
+            Collections.sort(authors);
+            map.put("authors", authors);
         }
-        Collections.sort(authors);
-        map.put("authors", authors);
         return map;
     }
 
     /**
-     * Ö´ĞĞÃüÁîĞĞ,·µ»ØÎÄ±¾
+     * æ‰§è¡Œå‘½ä»¤è¡Œ,è¿”å›æ–‡æœ¬
      *
      * @param cmd
      * @return
@@ -104,7 +128,7 @@ public class SvnServiceImpl implements SvnService {
 
 
     /**
-     * ½«svn·µ»ØµÄxmlÎÄ±¾×ª³Émap
+     * å°†svnè¿”å›çš„xmlæ–‡æœ¬è½¬æˆmap
      *
      * @param xml
      * @return
@@ -116,13 +140,13 @@ public class SvnServiceImpl implements SvnService {
         List<Element> nodes = root.elements("logentry");
         List<Map<String, Object>> result = new ArrayList();
         for (Element node : nodes) {
-            Map<String, Object> nodeMap = new HashMap<>();
+            Map<String, Object> nodeMap = new HashMap();
             String author = node.element("author").getText();
             String date = node.element("date").getText();
             String msg = node.element("msg").getText();
             List<Element> paths = node.element("paths").elements("path");
-            List<String> pathListAfter = new ArrayList<>();
-            List<String> pathListBefore = new ArrayList<>();
+            List<String> pathListAfter = new ArrayList();
+            List<String> pathListBefore = new ArrayList();
             for (Element pathElement : paths) {
                 String path = pathElement.getText();
                 pathListBefore.add(path);
@@ -131,8 +155,21 @@ public class SvnServiceImpl implements SvnService {
                     pathListAfter.add(path1);
                 }
             }
+
             nodeMap.put("author", author);
-            nodeMap.put("date", date);
+            Date dateTime = null;
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            try {
+                dateTime = sdf1.parse(date.substring(0, date.indexOf(".")).toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar ca=Calendar.getInstance();
+            ca.setTime(dateTime);
+            ca.add(Calendar.HOUR_OF_DAY, 8);
+
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            nodeMap.put("date", sdf2.format(ca.getTime()));
             nodeMap.put("msg", msg);
             nodeMap.put("paths_before", pathListBefore);
             nodeMap.put("paths_after", pathListAfter);
@@ -152,57 +189,38 @@ public class SvnServiceImpl implements SvnService {
                 if (value instanceof List) {
                     List<String> valueList = (List<String>) value;
                     for (String value1 : valueList) {
-                        String newPath = path.replaceFirst(entry.getKey(), value1) + " (Í¨ÓÃÀà)";
-                        newPath=newPath+"\n";
+                        String newPath = path.replaceFirst(entry.getKey(), value1) + " (é€šç”¨ç±»)";
+                        newPath = newPath + "\n";
                         resultList.add(newPath);
                     }
                 } else {
                     String newPath = path.replaceFirst(entry.getKey(), entry.getValue().toString());
                     if (newPath.endsWith("properties"))
-                        newPath = newPath + "(ÅäÖÃÎÄ¼ş)";
-                    newPath=newPath+"\n";
+                        newPath = newPath + "(é…ç½®æ–‡ä»¶)";
+                    newPath = newPath + "\n";
                     resultList.add(newPath);
                 }
                 return resultList;
             }
         }
-        resultList.add(path + "×¢:×ª»»Ê§°Ü");
+        resultList.add(path + " (æ³¨:è½¬æ¢å¤±è´¥)");
         return resultList;
     }
 
     /**
-     * »ñÈ¡ÅäÖÃÎÄ¼şÖĞµÄÕıÔòÆ¥Åä
+     * è·å–é…ç½®æ–‡ä»¶ä¸­çš„æ­£åˆ™åŒ¹é…
      *
      * @return
      */
     private Map<String, Object> getSetting() {
-        BufferedReader bf = null;
+        InputStream inputStream = WebApplication.class.getClassLoader().getResourceAsStream("setting.json");
+        String value =null;
         try {
-            bf = new BufferedReader(new FileReader("src/main/resources/setting.json"));
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
+            value = IOUtils.toString(inputStream, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        String content = "";
-        StringBuilder sb = new StringBuilder();
-        while (content != null) {
-            try {
-                content = bf.readLine();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            if (content == null) {
-                break;
-            }
-
-            sb.append(content.trim());
-        }
-
-        try {
-            bf.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        Map settingMap = JSON.parseObject(sb.toString(), Map.class);
+        Map settingMap = JSON.parseObject(value, Map.class);
         return settingMap;
     }
 }
