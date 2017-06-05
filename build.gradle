@@ -10,14 +10,10 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-
-//注:执行Gradle Import Changes 的时候需要注释该行
-//编译前需要该行代码
-apply plugin: 'spring-boot'
-
-jar {
+apply plugin: 'war'
+war {
     baseName = 'svntool'
-    version = '1.0'
+    version = '1.1'
 }
 
 sourceCompatibility = 1.6
@@ -36,4 +32,9 @@ dependencies {
     compile 'dom4j:dom4j:1.6.1'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.32'
     compile 'commons-io:commons-io:2.5'
+    providedCompile("org.springframework.boot:spring-boot-starter-tomcat")
 }
+
+//注:执行Gradle Import Changes 的时候需要注释该行
+//编译时需要该行代码
+apply plugin: 'spring-boot'

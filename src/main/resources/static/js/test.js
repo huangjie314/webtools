@@ -2,42 +2,42 @@ $(document).ready(function () {
 
 
     $("#jobcn").click(function () {
-        location.href = "/query?path=JobcnX";
+        location.href = "query?path=JobcnX";
     });
     $("#jobcn").click(function () {
-        location.href = "/query?path=JobcnX";
+        location.href = "query?path=JobcnX";
     });
     $("#jobcn_p").click(function () {
-        location.href = "/query?path=JobcnX,trunk";
+        location.href = "query?path=JobcnX,trunk";
     });
     $("#jobcn_c").click(function () {
-        location.href = "/query?path=JobcnX,Employer";
+        location.href = "query?path=JobcnX,Employer";
     });
     $("#jobcn_m").click(function () {
-        location.href = "/query?path=JobcnX,weihu";
+        location.href = "query?path=JobcnX,weihu";
     });
     $("#jobcn_u").click(function () {
-        location.href = "/query?path=JobcnX,util";
+        location.href = "query?path=JobcnX,util";
     });
 
     $("#biz").click(function () {
-        location.href = "/query?path=BizOpp";
+        location.href = "query?path=BizOpp";
     });
     $("#biz_f").click(function () {
-        location.href = "/query?path=BizOpp,ForeGround";
+        location.href = "query?path=BizOpp,ForeGround";
     });
     $("#biz_c").click(function () {
-        location.href = "/query?path=BizOpp,MerchantCenter";
+        location.href = "query?path=BizOpp,MerchantCenter";
     });
     $("#biz_m").click(function () {
-        location.href = "/query?path=BizOpp,Maintenance";
+        location.href = "query?path=BizOpp,Maintenance";
     });
     $("#biz_common").click(function () {
-        location.href = "/query?path=BizOpp,Common";
+        location.href = "query?path=BizOpp,Common";
     });
 
     $("#logout").click(function () {
-        location.href = "/doLogout";
+        location.href = "doLogout";
     });
 
     //复制

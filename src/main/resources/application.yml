@@ -3,27 +3,28 @@
 spring:
   profiles:
     active: dev
----
-# 开发环境配置
-spring:
   thymeleaf:
+    cache: false
+    check-template-location: true
     prefix: classpath:/templates/
-  profiles: dev
-# Server settings
-server:
-  port: 8080
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    content-type: text/html
 # svn settings
 svn:
   url: 192.168.61.155:11001
 ---
+# 开发环境配置
+spring:
+  profiles: dev
+# Server settings
+server:
+  port: 8888
+---
 # 测试环境配置
 spring:
-  thymeleaf:
-    prefix: classpath:/templates/
   profiles: prod
 # Server settings
 server:
   port: 8888
-# svn settings
-svn:
-  url: 192.168.61.155:11001
