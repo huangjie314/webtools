@@ -13,7 +13,7 @@ apply plugin: 'idea'
 apply plugin: 'war'
 war {
     baseName = 'svntool'
-    version = '1.1'
+    version = '1.2'
 }
 
 sourceCompatibility = 1.6

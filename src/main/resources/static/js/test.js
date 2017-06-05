@@ -49,6 +49,17 @@ $(document).ready(function () {
         location.href = "query?start="+start+"&end="+end+"&path="+path;
     });
 
+    //选中事件
+    $("table").on('click', '.check_row', function () {
+        var $this = $(this);
+        var checkBox=$this.find('input[type="checkbox"]');
+        if (checkBox.is(":checked")) {
+            checkBox.attr("checked", false);
+        } else {
+            checkBox.attr("checked", true);;
+        }
+    });
+
     //复制
     $("table").on('click', '.copy', function () {
         var $this = $(this);

@@ -14,7 +14,7 @@
     <script src="js/test.js"></script>
 </head>
 <body>
-<p>
+<form class="form-inline">
     <button type="button" class="btn btn-warning  btn-lg" id="all">全部</button>
     <button type="button" class="btn btn-primary  btn-lg" id="jobcn">卓博</button>
     <button type="button" class="btn btn-default  btn-lg" id="jobcn_p">个人</button>
@@ -26,35 +26,37 @@
     <button type="button" class="btn btn-default  btn-lg" id="biz_c">商家</button>
     <button type="button" class="btn btn-default  btn-lg" id="biz_m">维护</button>
     <button type="button" class="btn btn-default  btn-lg" id="biz_common">Common</button>
-    <input id="start" type="date" th:value="${start}"/> - <input id="end" type="date" th:value="${end}"/>
-    <button type="button" class="btn btn-success  btn-lg" id="search">Search</button>
+    <input id="start" class="form-control" type="date" th:value="${start}"/> - <input id="end" class="form-control"
+                                                                                      type="date" th:value="${end}"/>
+    <button type="button" class="btn btn-success" id="search">Search</button>
     <button type="button" class="btn btn-danger  btn-lg" id="logout" style="float:right">注销</button>
-</p>
+</form>
 <!--<p>-->
-    <!--<span th:each="author:${authors}">-->
-        <!--<a th:href="@{/query(author=${author},path=${path})}">-->
-            <!--<button type="button" class="btn btn-default" th:text="${author}">JCNEP</button>-->
-        <!--</a>-->
-    <!--</span>-->
+<!--<span th:each="author:${authors}">-->
+<!--<a th:href="@{/query(author=${author},path=${path})}">-->
+<!--<button type="button" class="btn btn-default" th:text="${author}">JCNEP</button>-->
+<!--</a>-->
+<!--</span>-->
 <!--</p>-->
 
 <table class="table table-hover">
     <thead>
     <tr>
+
+        <th>提交日期</th>
+        <th>作者</th>
+        <th width="400">标题</th>
+        <th>路径</th>
         <th></th>
-        <th>Date</th>
-        <th>Author</th>
-        <th width="400">Msg</th>
-        <th>Paths</th>
         <th>
             <!--<button type="button" class="btn btn-default" id="copy">Copy</button>-->
-            <button type="button" class="btn btn-default" id="send_all"><a>Send Email</a></button>
+            <button type="button" class="btn btn-default" id="send_all"><a>发送多条</a></button>
         </th>
     </tr>
     </thead>
     <tbody id="table_content">
-    <tr th:each="row: ${list}">
-        <td><input type="checkbox" class="_dataCheckBox"/></td>
+    <tr th:each="row: ${list}" class="check_row">
+
         <td th:text="${row.date}" class="date">date</td>
         <td th:text="${row.author}" class="author">author</td>
         <td th:text="${row.msg}" class="msg">msg</td>
@@ -63,9 +65,10 @@
                 <div th:text="${path}" class="path">path</div>
             </span>
         </td>
+        <td><input type="checkbox" class="_dataCheckBox"/></td>
         <td>
             <!--<button type="button" class="btn btn-default copy">Copy</button>-->
-            <button type="button" class="btn btn-default send"><a>Send Email</a></button>
+            <button type="button" class="btn btn-default send"><a>发送邮件</a></button>
         </td>
         <!--<input type="hidden" id="info" th:value="${row.msg}+${path}"/>-->
     </tr>

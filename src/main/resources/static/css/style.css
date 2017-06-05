@@ -116,3 +116,7 @@
 .bgRed{
     background-color: #b2dba1;
 }
+.input_date{
+    width: 200px;
+    height: 60px;
+}
