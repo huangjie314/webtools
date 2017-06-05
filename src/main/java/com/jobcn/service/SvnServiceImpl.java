@@ -33,39 +33,44 @@ public class SvnServiceImpl implements SvnService {
         cmd = cmd + " --username " + author + " --password " + password;
         String xml = exeCommond(cmd);
         //<?xml version="1.0" encoding="UTF-8"?><log>  账号密码不正确返回的格式
-        if (!"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)){
+        if (!"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
             return true;
         }
         return false;
     }
 
     @Override
-    public Map<String, Object> query(Integer num, String path, String author, String password) {
+    public Map<String, Object> query(Integer num, String path, String author, String password, String start, String end) {
         Map<String, Object> map = new HashMap<String, Object>();
         //svn log svn://192.168.61.155:11001 -l 100 -v --xml --username JCNEP7340 --password vincent -r{2016-06-27T12:00:00}:{2016-06-28T13:00:00}
 
-
-        String cmd = "svn log svn://" + svnProperties.getUrl() + "/";
+        StringBuilder cmd = new StringBuilder();
+        cmd.append("svn log svn://" + svnProperties.getUrl() + "/");
         //文件路径
         if (path != null && !"".equals(path)) {
             path = path.replaceFirst(",", "/");
-            cmd = cmd + path + "/";
+            cmd.append(path + "/");
         }
         //数量
         if (num == null || num == 0) {
-            cmd = cmd + " -l 300 -v --xml ";
+            cmd.append(" -l 300 -v --xml ");
         } else {
-            cmd = cmd + " -l " + num + " -v --xml ";
+            cmd.append(" -l " + num + " -v --xml ");
         }
-        cmd = cmd + " --username " + author + " --password " + password;
+        cmd.append(" --username " + author + " --password " + password);
         if (author != null && !"".equals(author)) {
             if (!author.startsWith("JCNEP"))
                 author = "JCNEP" + author;
-            cmd = cmd + " --search " + author;
+            cmd.append(" --search " + author);
         }
-        String xml = exeCommond(cmd);
+        //日期
+        if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
+            cmd.append(" -r{" + end + "T23:59:59}:{" + start + "T00:00:00} ");
+        }
+
+        String xml = exeCommond(cmd.toString());
         //<?xml version="1.0" encoding="UTF-8"?><log>  账号密码不正确返回的格式
-        if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)){
+        if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
             return map;
         }
         List<Map<String, Object>> list = null;
@@ -84,6 +89,12 @@ public class SvnServiceImpl implements SvnService {
             }
             Collections.sort(authors);
             map.put("authors", authors);
+            if (list.size() > 0) {
+                map.put("end", list.get(0).get("date").toString().substring(0, 10));
+                map.put("start", list.get(list.size() - 1).get("date").toString().substring(0, 10));
+            }{
+
+            }
         }
         return map;
     }
@@ -157,25 +168,29 @@ public class SvnServiceImpl implements SvnService {
             }
 
             nodeMap.put("author", author);
-            Date dateTime = null;
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            try {
-                dateTime = sdf1.parse(date.substring(0, date.indexOf(".")).toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            Calendar ca=Calendar.getInstance();
-            ca.setTime(dateTime);
-            ca.add(Calendar.HOUR_OF_DAY, 8);
-
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            nodeMap.put("date", sdf2.format(ca.getTime()));
+            nodeMap.put("date", formatDateTime(date));
             nodeMap.put("msg", msg);
             nodeMap.put("paths_before", pathListBefore);
             nodeMap.put("paths_after", pathListAfter);
             result.add(nodeMap);
         }
+
         return result;
+    }
+
+    private String formatDateTime(String date) {
+        Date dateTime = null;
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            dateTime = sdf1.parse(date.substring(0, date.indexOf(".")).toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(dateTime);
+        ca.add(Calendar.HOUR_OF_DAY, 8);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf2.format(ca.getTime());
     }
 
     private List<String> replace(String path) {
@@ -214,7 +229,7 @@ public class SvnServiceImpl implements SvnService {
      */
     private Map<String, Object> getSetting() {
         InputStream inputStream = WebApplication.class.getClassLoader().getResourceAsStream("setting.json");
-        String value =null;
+        String value = null;
         try {
             value = IOUtils.toString(inputStream, "UTF-8");
         } catch (IOException e) {

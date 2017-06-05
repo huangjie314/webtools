@@ -15,6 +15,7 @@
 </head>
 <body>
 <p>
+    <button type="button" class="btn btn-warning  btn-lg" id="all">全部</button>
     <button type="button" class="btn btn-primary  btn-lg" id="jobcn">卓博</button>
     <button type="button" class="btn btn-default  btn-lg" id="jobcn_p">个人</button>
     <button type="button" class="btn btn-default  btn-lg" id="jobcn_c">商家</button>
@@ -25,6 +26,8 @@
     <button type="button" class="btn btn-default  btn-lg" id="biz_c">商家</button>
     <button type="button" class="btn btn-default  btn-lg" id="biz_m">维护</button>
     <button type="button" class="btn btn-default  btn-lg" id="biz_common">Common</button>
+    <input id="start" type="date" th:value="${start}"/> - <input id="end" type="date" th:value="${end}"/>
+    <button type="button" class="btn btn-success  btn-lg" id="search">Search</button>
     <button type="button" class="btn btn-danger  btn-lg" id="logout" style="float:right">注销</button>
 </p>
 <!--<p>-->
@@ -38,20 +41,20 @@
 <table class="table table-hover">
     <thead>
     <tr>
-        <!--<th><input type="checkbox" value=""/></th>-->
+        <th></th>
         <th>Date</th>
         <th>Author</th>
         <th width="400">Msg</th>
         <th>Paths</th>
         <th>
             <!--<button type="button" class="btn btn-default" id="copy">Copy</button>-->
-            <!--<button type="button" class="btn btn-default" id="send"><a>Send Email</a></button>-->
+            <button type="button" class="btn btn-default" id="send_all"><a>Send Email</a></button>
         </th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="table_content">
     <tr th:each="row: ${list}">
-        <!--<td><input type="checkbox" value=""/></td>-->
+        <td><input type="checkbox" class="_dataCheckBox"/></td>
         <td th:text="${row.date}" class="date">date</td>
         <td th:text="${row.author}" class="author">author</td>
         <td th:text="${row.msg}" class="msg">msg</td>
@@ -68,10 +71,7 @@
     </tr>
     </tbody>
 </table>
-
+<input type="hidden" id="path" th:value="${path}"/>
 <script src="js/bootstrap.min.js"></script>
-
-
-
 </body>
 </html>

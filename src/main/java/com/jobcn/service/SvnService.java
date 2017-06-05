@@ -19,7 +19,10 @@ public interface SvnService {
      * @param num 查询前多少条
      * @param Path  项目路径(只需要端口以后的路径)
      * @param author 查询的作者
+     * @param start 开始时间
+     * @param end 结束时间
      * @return
      */
-    Map<String,Object> query(Integer num, String Path, String author,String password);
+
+    Map<String,Object> query(Integer num, String Path, String author,String password,String start,String end);
 }

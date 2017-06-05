@@ -87,10 +87,12 @@ public class PublicController {
     @RequestMapping("query")
     public String query(HttpSession session, Model model,
                         @RequestParam(value = "num", required = false) Integer num,
-                        @RequestParam(value = "path", required = false) String path) {
+                        @RequestParam(value = "path", required = false) String path,
+                        @RequestParam(value = "start", required = false) String start,
+                        @RequestParam(value = "end", required = false) String end) {
         String username = session.getAttribute("username").toString();
         String password = session.getAttribute("password").toString();
-        Map<String, Object> map = svnService.query(num, path, username, password);
+        Map<String, Object> map = svnService.query(num, path, username, password,start,end);
         if (map.get("list") == null) {
             session.invalidate();
             return "redirect:/query";
