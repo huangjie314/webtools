@@ -38,9 +38,10 @@ public class PublicController {
      * @return
      */
     @RequestMapping("login")
-    public String login() {
+    public String login(Model model, @RequestParam(value = "tip", required = false) String tip) {
+        if(tip!=null)
+            model.addAttribute("tip",tip);
         return "public/login";
-
     }
 
     /**
@@ -60,8 +61,8 @@ public class PublicController {
             session.setAttribute("password", password);
             return "redirect:/query";
         } else {
-            model.addAttribute("tip", "账号或密码错误");
-            return "redirect:/login";
+            model.addAttribute("tip", "账号或密码错误!");
+            return "public/login";
         }
     }
 
@@ -94,7 +95,7 @@ public class PublicController {
         String password = session.getAttribute("password").toString();
         Map<String, Object> map = svnService.query(num, path, username, password,start,end);
         if (map.get("list") == null) {
-            session.invalidate();
+            //session.invalidate();
             return "redirect:/query";
         }
         model.addAllAttributes(map);

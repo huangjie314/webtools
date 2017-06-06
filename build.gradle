@@ -1,6 +1,9 @@
 buildscript {
+    ext {
+        springBootVersion = '1.5.1.RELEASE'
+    }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.0.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
     repositories {
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
@@ -10,13 +13,14 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
+
 war {
     baseName = 'svntool'
-    version = '1.2'
 }
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 
 repositories {
     maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
@@ -24,17 +28,13 @@ repositories {
 }
 
 dependencies {
-    testCompile'org.springframework.boot:spring-boot-starter-test:1.2.0.RELEASE'
-    compile('org.springframework.boot:spring-boot-starter-web:1.2.0.RELEASE')
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '1.1.4.RELEASE',force:true
-    compile'org.springframework.boot:spring-boot-starter-thymeleaf:1.2.0.RELEASE'
-    compile 'org.tmatesoft.svnkit:svnkit:1.8.7'
+    testCompile'org.springframework.boot:spring-boot-starter-test'
+    compile'org.springframework.boot:spring-boot-starter-web'
+    compile'org.springframework.boot:spring-boot-starter-thymeleaf'
+    runtime'org.springframework.boot:spring-boot-devtools'
     compile 'dom4j:dom4j:1.6.1'
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.32'
+    compile 'com.alibaba:fastjson:1.2.32'
     compile 'commons-io:commons-io:2.5'
-    providedCompile("org.springframework.boot:spring-boot-starter-tomcat")
+    //providedCompile("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
-//注:执行Gradle Import Changes 的时候需要注释该行
-//编译时需要该行代码
-apply plugin: 'spring-boot'

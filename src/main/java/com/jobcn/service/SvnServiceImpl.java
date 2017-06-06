@@ -8,6 +8,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ import java.util.*;
  */
 @Service("svnService")
 public class SvnServiceImpl implements SvnService {
+    private final Logger logger = LoggerFactory.getLogger(SvnServiceImpl.class);
+
     @Autowired
     private SvnProperties svnProperties;
 
@@ -33,7 +37,7 @@ public class SvnServiceImpl implements SvnService {
         cmd = cmd + " --username " + author + " --password " + password;
         String xml = exeCommond(cmd);
         //<?xml version="1.0" encoding="UTF-8"?><log>  账号密码不正确返回的格式
-        if (!"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
+        if (xml!=null&&!"".equals(xml)&&!"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
             return true;
         }
         return false;
@@ -67,8 +71,9 @@ public class SvnServiceImpl implements SvnService {
         if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
             cmd.append(" -r{" + end + "T23:59:59}:{" + start + "T00:00:00} ");
         }
-
+        //logger.info("cmd======>"+cmd.toString());
         String xml = exeCommond(cmd.toString());
+        //logger.info("xml======>"+xml);
         //<?xml version="1.0" encoding="UTF-8"?><log>  账号密码不正确返回的格式
         if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
             return map;
