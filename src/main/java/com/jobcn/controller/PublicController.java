@@ -90,10 +90,11 @@ public class PublicController {
                         @RequestParam(value = "num", required = false) Integer num,
                         @RequestParam(value = "path", required = false) String path,
                         @RequestParam(value = "start", required = false) String start,
-                        @RequestParam(value = "end", required = false) String end) {
+                        @RequestParam(value = "end", required = false) String end,
+                        @RequestParam(value = "author", required = false) String author) {
         String username = session.getAttribute("username").toString();
         String password = session.getAttribute("password").toString();
-        Map<String, Object> map = svnService.query(num, path, username, password,start,end);
+        Map<String, Object> map = svnService.query(num, path, username, password,start,end,author);
         if (map.get("list") == null) {
             //session.invalidate();
             return "redirect:/query";

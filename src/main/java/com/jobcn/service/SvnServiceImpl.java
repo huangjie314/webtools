@@ -30,6 +30,7 @@ public class SvnServiceImpl implements SvnService {
     private SvnProperties svnProperties;
 
     static private Map<String, Object> setting = null;
+    static private Map<String, Object> authors = null;
 
     @Override
     public boolean login(String author, String password) {
@@ -37,14 +38,14 @@ public class SvnServiceImpl implements SvnService {
         cmd = cmd + " --username " + author + " --password " + password;
         String xml = exeCommond(cmd);
         //<?xml version="1.0" encoding="UTF-8"?><log>  账号密码不正确返回的格式
-        if (xml!=null&&!"".equals(xml)&&!"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
+        if (xml != null && !"".equals(xml) && !"<?xml version=\"1.0\" encoding=\"UTF-8\"?><log>".equals(xml)) {
             return true;
         }
         return false;
     }
 
     @Override
-    public Map<String, Object> query(Integer num, String path, String author, String password, String start, String end) {
+    public Map<String, Object> query(Integer num, String path, String username, String password, String start, String end, String author) {
         Map<String, Object> map = new HashMap<String, Object>();
         //svn log svn://192.168.61.155:11001 -l 100 -v --xml --username JCNEP7340 --password vincent -r{2016-06-27T12:00:00}:{2016-06-28T13:00:00}
 
@@ -61,11 +62,20 @@ public class SvnServiceImpl implements SvnService {
         } else {
             cmd.append(" -l " + num + " -v --xml ");
         }
-        cmd.append(" --username " + author + " --password " + password);
+        cmd.append(" --username " + username + " --password " + password);
+
         if (author != null && !"".equals(author)) {
-            if (!author.startsWith("JCNEP"))
-                author = "JCNEP" + author;
-            cmd.append(" --search " + author);
+            if (!"all".equals(author)) {
+                if (!author.startsWith("JCNEP"))
+                    author = "JCNEP" + author;
+                cmd.append(" --search " + author);
+            }
+        } else {
+            if (username != null && !"".equals(username)) {
+                if (!username.startsWith("JCNEP"))
+                    username = "JCNEP" + username;
+                cmd.append(" --search " + username);
+            }
         }
         //日期
         if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
@@ -97,7 +107,8 @@ public class SvnServiceImpl implements SvnService {
             if (list.size() > 0) {
                 map.put("end", list.get(0).get("date").toString().substring(0, 10));
                 map.put("start", list.get(list.size() - 1).get("date").toString().substring(0, 10));
-            }{
+            }
+            {
 
             }
         }
@@ -151,6 +162,10 @@ public class SvnServiceImpl implements SvnService {
      * @throws DocumentException
      */
     public List<Map<String, Object>> xml2list(String xml) throws DocumentException {
+        if (authors == null) {
+            authors = getAuthor();
+        }
+        List<String> resultList = new ArrayList();
         Document document = DocumentHelper.parseText(xml);
         Element root = document.getRootElement();
         List<Element> nodes = root.elements("logentry");
@@ -160,6 +175,19 @@ public class SvnServiceImpl implements SvnService {
             String author = node.element("author").getText();
             String date = node.element("date").getText();
             String msg = node.element("msg").getText();
+            //处理msg
+            if (!msg.startsWith("--")) {
+                if (msg.startsWith("-")) {
+                    msg = "-" + msg;
+                } else {
+                    msg = "--" + msg;
+                }
+            }
+            if (authors.containsKey(author)) {
+                if (!msg.trim().endsWith(authors.get(author).toString())) {
+                    msg = msg + " " + authors.get(author).toString();
+                }
+            }
             List<Element> paths = node.element("paths").elements("path");
             List<String> pathListAfter = new ArrayList();
             List<String> pathListBefore = new ArrayList();
@@ -171,7 +199,6 @@ public class SvnServiceImpl implements SvnService {
                     pathListAfter.add(path1);
                 }
             }
-
             nodeMap.put("author", author);
             nodeMap.put("date", formatDateTime(date));
             nodeMap.put("msg", msg);
@@ -242,5 +269,22 @@ public class SvnServiceImpl implements SvnService {
         }
         Map settingMap = JSON.parseObject(value, Map.class);
         return settingMap;
+    }
+
+    /**
+     * 获取配置文件中的作者
+     *
+     * @return
+     */
+    private Map<String, Object> getAuthor() {
+        InputStream inputStream = WebApplication.class.getClassLoader().getResourceAsStream("author.json");
+        String value = null;
+        try {
+            value = IOUtils.toString(inputStream, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Map authorMap = JSON.parseObject(value, Map.class);
+        return authorMap;
     }
 }

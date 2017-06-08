@@ -1,6 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.1.RELEASE'
+        ext.kotlin_version = '1.1.1'
+        springBootVersion = '1.5.3.RELEASE'
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -19,7 +20,9 @@ apply plugin: 'war'
 war {
     baseName = 'svntool'
 }
-
+jar {
+    baseName = 'svntool'
+}
 sourceCompatibility = 1.7
 
 repositories {
@@ -28,6 +31,7 @@ repositories {
 }
 
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     testCompile'org.springframework.boot:spring-boot-starter-test'
     compile'org.springframework.boot:spring-boot-starter-web'
     compile'org.springframework.boot:spring-boot-starter-thymeleaf'

@@ -15,14 +15,15 @@ public interface SvnService {
     boolean login(String author,String password);
 
     /**
-     * 查询
+     *
      * @param num 查询前多少条
-     * @param Path  项目路径(只需要端口以后的路径)
-     * @param author 查询的作者
+     * @param Path 项目路径(只需要端口以后的路径)
+     * @param username
+     * @param password
      * @param start 开始时间
      * @param end 结束时间
+     * @param author 需要查询的author,all为查询所有
      * @return
      */
-
-    Map<String,Object> query(Integer num, String Path, String author,String password,String start,String end);
+    Map<String,Object> query(Integer num, String Path, String username,String password,String start,String end,String author);
 }
