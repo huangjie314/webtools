@@ -50,9 +50,9 @@
         <th></th>
         <th>
             <!--<button type="button" class="btn btn-default" id="copy">Copy</button>-->
-            <button type="button" class="btn btn-default" id="send_all"><a>发送多条</a></button>
+            <a type="button" class="btn btn-default" id="send_all"  href="">发送多条</a>
         </th>
-    </tr>
+    </tr>a
     </thead>
     <tbody id="table_content">
     <tr th:each="row: ${list}" class="check_row">
@@ -67,7 +67,7 @@
         <td><input type="checkbox" class="_dataCheckBox"/></td>
         <td>
             <!--<button type="button" class="btn btn-default copy">Copy</button>-->
-            <button type="button" class="btn btn-default send"><a>发送邮件</a></button>
+            <a type="button" class="btn btn-default send" href="">发送邮件</a>
         </td>
         <!--<input type="hidden" id="info" th:value="${row.msg}+${path}"/>-->
     </tr>

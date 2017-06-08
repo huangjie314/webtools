@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    if (detectOS() == 'Linux') {
+        var tab = "\r\n";
+    } else {
+        var tab = "<br/>";
+    }
+    tab = encodeURI(tab);
 
     $("#all").click(function () {
         location.href = "query";
@@ -46,17 +52,18 @@ $(document).ready(function () {
         var start = $("#start").val();
         var end = $("#end").val();
         var path = $("#path").val();
-        location.href = "query?start="+start+"&end="+end+"&path="+path;
+        location.href = "query?start=" + start + "&end=" + end + "&path=" + path;
     });
 
     //选中事件
     $("table").on('click', '.check_row', function () {
         var $this = $(this);
-        var checkBox=$this.find('input[type="checkbox"]');
+        var checkBox = $this.find('input[type="checkbox"]');
         if (checkBox.is(":checked")) {
             checkBox.attr("checked", false);
         } else {
-            checkBox.attr("checked", true);;
+            checkBox.attr("checked", true);
+            ;
         }
     });
 
@@ -70,18 +77,15 @@ $(document).ready(function () {
     });
 
     //发送邮件
-    $("table").on('click', '.send', function () {
+    $("table").on('click', '.send', function (event) {
         var $this = $(this);
         var email = '8999@jobcn.com';
-
         var title = $this.closest('tr').find(".msg").text();
-        var context = title + '</br>' + $this.closest('tr').find(".path").text();
-        context = context.replace(/\n/g, "</br>")
-
+        var context = title + tab + $this.closest('tr').find(".path").text();
+        context = context.replace(/\n/g, tab)
         var url = "mailto:" + email + "?subject=" + title + "&body=" + context;
-        var aTarget = $this.find("a");
-        aTarget[0].href = url;
-        aTarget.trigger("click");
+        $this[0].href = url;
+        $this.trigger("click");
     });
 
 
@@ -90,26 +94,38 @@ $(document).ready(function () {
         var checkBoxs = $("#table_content").find('input[type="checkbox"]');
         var titles = [];
         var contexts = [];
-        checkBoxs.each(function(e){
+        checkBoxs.each(function (e) {
             var $this = $(this);
-            if($this.is(":checked")){
+            if ($this.is(":checked")) {
                 var title = $this.closest("tr").find(".msg").text();
-                var context = title + '</br>' + $this.closest("tr").find(".path").text();
-                context = context.replace(/\n/g, "</br>")
+                var context = title + tab + $this.closest("tr").find(".path").text();
+                context = context.replace(/\n/g, tab);
                 titles.push(title);
                 contexts.push(context);
             }
         });
-        if(titles.length == 0){
+        if (titles.length == 0) {
             alert("没有选中");
             return;
         }
         var $this = $(this);
         var email = '8999@jobcn.com';
-        var url = "mailto:" + email + "?subject=" + titles.join(';') + "&body=" + contexts.join('</br>');
-        var aTarget = $this.find("a");
-        aTarget[0].href = url;
-        aTarget.trigger("click");
+        var url = "mailto:" + email + "?subject=" + titles.join(';') + "&body=" + contexts.join(tab);
+        $this[0].href = url;
+        $this.trigger("click");
     });
+
+
+    function detectOS() {
+        var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows");
+        if (isMac) return "Win";
+        var isMac = (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh") || (navigator.platform == "MacIntel");
+        if (isMac) return "Mac";
+        var isUnix = (navigator.platform == "X11") && !isWin && !isMac;
+        if (isUnix) return "Unix";
+        var isLinux = (String(navigator.platform).indexOf("Linux") > -1);
+        if (isLinux) return "Linux";
+        return "other";
+    }
 
 })

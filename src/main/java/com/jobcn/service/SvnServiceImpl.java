@@ -250,7 +250,7 @@ public class SvnServiceImpl implements SvnService {
                 return resultList;
             }
         }
-        resultList.add(path + " (注:转换失败)");
+        resultList.add(path + " (注:转换失败)\n");
         return resultList;
     }
 
