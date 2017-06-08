@@ -76,6 +76,7 @@ $(document).ready(function () {
         alert(context);
     });
 
+    var value = 0;
     //发送邮件
     $("table").on('click', '.send', function (event) {
         var $this = $(this);
@@ -85,7 +86,13 @@ $(document).ready(function () {
         context = context.replace(/\n/g, tab)
         var url = "mailto:" + email + "?subject=" + title + "&body=" + context;
         $this[0].href = url;
-        $this.trigger("click");
+        if (value < 1) {
+            value += 1;
+            $this.trigger("click");
+        }
+        else {
+            value = 0;
+        }
     });
 
 
@@ -112,7 +119,13 @@ $(document).ready(function () {
         var email = '8999@jobcn.com';
         var url = "mailto:" + email + "?subject=" + titles.join(';') + "&body=" + contexts.join(tab);
         $this[0].href = url;
-        $this.trigger("click");
+        if (value < 1) {
+            value += 1;
+            $this.trigger("click");
+        }
+        else {
+            value = 0;
+        }
     });
 
 
