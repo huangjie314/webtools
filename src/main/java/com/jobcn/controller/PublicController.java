@@ -4,6 +4,8 @@ package com.jobcn.controller;
  * Created by winson on 11/02/2017.
  */
 
+import com.jobcn.Entity.SvnUser;
+import com.jobcn.repository.SvnUserRepository;
 import com.jobcn.service.SvnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +22,8 @@ public class PublicController {
 
     @Autowired
     private SvnService svnService;
-
+    @Autowired
+    private SvnUserRepository svnUserRepository;
     /**
      * 首页
      *
@@ -39,8 +42,8 @@ public class PublicController {
      */
     @RequestMapping("login")
     public String login(Model model, @RequestParam(value = "tip", required = false) String tip) {
-        if(tip!=null)
-            model.addAttribute("tip",tip);
+        if (tip != null)
+            model.addAttribute("tip", tip);
         return "public/login";
     }
 
@@ -57,13 +60,33 @@ public class PublicController {
         pass = svnService.login(username, password);
 
         if (pass) {
+            //判断是否有对于的权限记录没有则取,没有则添加
+            Integer id = Integer.parseInt(username.substring(5, username.length()));
+            SvnUser svnUser = svnService.checkUser(id);
             session.setAttribute("username", username);
             session.setAttribute("password", password);
+            session.setAttribute("svnUser", svnUser);
             return "redirect:/query";
         } else {
             model.addAttribute("tip", "账号或密码错误!");
             return "public/login";
         }
+    }
+
+    /**
+     * 设置姓名
+     *
+     * @return
+     */
+    @RequestMapping("setName")
+    public String setName(HttpSession session, Model model,  String name) {
+        SvnUser svnUser = (SvnUser) session.getAttribute("svnUser");
+        svnUser.setName(name);
+        svnUser = svnUserRepository.save(svnUser);
+        if (svnUser!=null&&svnUser.getName()!=null){
+            session.setAttribute("svnUser",svnUser);
+        }
+        return "redirect:/query";
     }
 
     /**
@@ -92,15 +115,33 @@ public class PublicController {
                         @RequestParam(value = "start", required = false) String start,
                         @RequestParam(value = "end", required = false) String end,
                         @RequestParam(value = "author", required = false) String author) {
+
         String username = session.getAttribute("username").toString();
         String password = session.getAttribute("password").toString();
-        Map<String, Object> map = svnService.query(num, path, username, password,start,end,author);
+        SvnUser svnUser = (SvnUser) session.getAttribute("svnUser");
+
+
+        switch (svnUser.getRole()) {
+            case "Normal"://①如果是Normal用户,不支持其他用户的搜索
+                author = null;
+                break;
+            case "Test"://②如果是Test用户,且搜索author为空或自己时,默认搜索全部
+                if (author == null || "".equals(author) || username.equals(author)) {
+                    author = "all";
+                    num=100;
+                }
+                break;
+            default:
+                break;
+        }
+        Map<String, Object> map = svnService.query(num, path, username, password, start, end, author);
         if (map.get("list") == null) {
             //session.invalidate();
             return "redirect:/query";
         }
         model.addAllAttributes(map);
         model.addAttribute("path", path);
+        model.addAttribute("author", author);
         return "public/queryReslut";
     }
 

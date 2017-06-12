@@ -1,8 +1,10 @@
 package com.jobcn.service;
 
 import com.alibaba.fastjson.JSON;
+import com.jobcn.Entity.SvnUser;
 import com.jobcn.WebApplication;
 import com.jobcn.config.SvnProperties;
+import com.jobcn.repository.SvnUserRepository;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -29,6 +31,9 @@ public class SvnServiceImpl implements SvnService {
     @Autowired
     private SvnProperties svnProperties;
 
+    @Autowired
+    private SvnUserRepository svnUserRepository;
+
     static private Map<String, Object> setting = null;
     static private Map<String, Object> authors = null;
 
@@ -45,10 +50,21 @@ public class SvnServiceImpl implements SvnService {
     }
 
     @Override
+    public SvnUser checkUser(Integer id) {
+        SvnUser svnUser = svnUserRepository.findOne(id);
+        if (svnUser == null) {
+            svnUser =new SvnUser();
+            svnUser.setId(id);
+            svnUser.setRole("Normal");
+            svnUser = svnUserRepository.save(svnUser);
+        }
+        return svnUser;
+    }
+
+    @Override
     public Map<String, Object> query(Integer num, String path, String username, String password, String start, String end, String author) {
         Map<String, Object> map = new HashMap<String, Object>();
         //svn log svn://192.168.61.155:11001 -l 100 -v --xml --username JCNEP7340 --password vincent -r{2016-06-27T12:00:00}:{2016-06-28T13:00:00}
-
         StringBuilder cmd = new StringBuilder();
         cmd.append("svn log svn://" + svnProperties.getUrl() + "/");
         //文件路径
@@ -277,14 +293,11 @@ public class SvnServiceImpl implements SvnService {
      * @return
      */
     private Map<String, Object> getAuthor() {
-        InputStream inputStream = WebApplication.class.getClassLoader().getResourceAsStream("author.json");
-        String value = null;
-        try {
-            value = IOUtils.toString(inputStream, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
+        Map authorMap =new HashMap();
+        List<SvnUser> list = svnUserRepository.findAll();
+        for (SvnUser svnUser:list) {
+            authorMap.put(svnUser.getId()<1000?"JCNEP0"+svnUser.getId():"JCNEP"+svnUser.getId(),svnUser.getName());
         }
-        Map authorMap = JSON.parseObject(value, Map.class);
         return authorMap;
     }
 }

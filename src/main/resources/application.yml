@@ -11,6 +11,15 @@ spring:
     mode: HTML5
     encoding: UTF-8
     content-type: text/html
+  datasource:
+      url: jdbc:mysql://192.168.61.208:3306/test?serverTimezone=UTC&characterEncoding=utf-8
+      username: forweb
+      password: azsxdcfv
+      driver-class-name: com.mysql.jdbc.Driver
+      tomcat:
+        max-wait: 10000
+        max-active: 100
+        test-on-borrow: true
 # svn settings
 svn:
   url: 192.168.61.155:11001

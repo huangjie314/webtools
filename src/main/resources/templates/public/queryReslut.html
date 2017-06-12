@@ -29,16 +29,27 @@
     <input id="start" class="form-control" type="date" th:value="${start}"/> - <input id="end" class="form-control"
                                                                                       type="date" th:value="${end}"/>
     <button type="button" class="btn btn-success" id="search">Search</button>
-    <button type="button" class="btn btn-danger  btn-lg" id="logout" style="float:right">注销</button>
+    <span style="font-size: x-large;float:right">
+    <span th:switch="${session.svnUser.role}">
+        <span th:case="'Dev'">超级管理员:</span>
+        <span th:case="'Admin'">管理员:</span>
+        <span th:case="'Test'">软件测试:</span>
+        <span th:case="'Normal'">开发:</span>
+    </span>
+    <span th:switch="${session.svnUser.name}">
+        <span th:case="null"><a href="">设置姓名</a></span>
+        <span th:case="*" th:text="${session.svnUser.name}">姓名</span>
+    </span>
+    <button type="button" class="btn btn-danger  btn-lg" id="logout">注销</button>
+        </span>
 </form>
-<!--<p>-->
-<!--<span th:each="author:${authors}">-->
-<!--<a th:href="@{/query(author=${author},path=${path})}">-->
-<!--<button type="button" class="btn btn-default" th:text="${author}">JCNEP</button>-->
-<!--</a>-->
-<!--</span>-->
+<!--<p th:if="${#lists.size(authors)>1}">-->
+    <!--<span th:each="author:${authors}">-->
+        <!--<a th:href="@{/query(author=${author},path=${path})}">-->
+            <!--<button type="button" class="btn btn-default " th:text="${author}">JCNEP</button>-->
+        <!--</a>-->
+    <!--</span>-->
 <!--</p>-->
-
 <table class="table table-hover">
     <thead>
     <tr>
@@ -47,12 +58,12 @@
         <th>作者</th>
         <th width="400">标题</th>
         <th>路径</th>
-        <th></th>
-        <th>
+        <th th:if="${session.svnUser.role!='Test'}"></th>
+        <th th:if="${session.svnUser.role!='Test'}">
             <!--<button type="button" class="btn btn-default" id="copy">Copy</button>-->
-            <a type="button" class="btn btn-default" id="send_all"  href="">发送多条</a>
+            <a type="button" class="btn btn-default" id="send_all" href="">发送多条</a>
         </th>
-    </tr>a
+    </tr>
     </thead>
     <tbody id="table_content">
     <tr th:each="row: ${list}" class="check_row">
@@ -64,8 +75,8 @@
                 <div th:text="${path}" class="path">path</div>
             </span>
         </td>
-        <td><input type="checkbox" class="_dataCheckBox"/></td>
-        <td>
+        <td th:if="${session.svnUser.role!='Test'}"><input type="checkbox" class="_dataCheckBox"/></td>
+        <td th:if="${session.svnUser.role!='Test'}">
             <!--<button type="button" class="btn btn-default copy">Copy</button>-->
             <a type="button" class="btn btn-default send" href="">发送邮件</a>
         </td>
