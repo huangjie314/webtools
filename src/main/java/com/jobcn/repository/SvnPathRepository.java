@@ -1,5 +1,6 @@
 package com.jobcn.repository;
 
+import com.jobcn.Entity.SvnPath;
 import com.jobcn.Entity.SvnUser;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,18 +17,18 @@ import java.util.List;
  */
 @Transactional
 @Repository
-@RepositoryDefinition(domainClass = SvnUser.class, idClass = Integer.class)
-public interface SvnUserRepository  extends JpaRepository<SvnUser, Integer> {
+@RepositoryDefinition(domainClass = SvnPath.class, idClass = Integer.class)
+public interface SvnPathRepository extends JpaRepository<SvnPath, Integer> {
 
-    @Cacheable(value="svnUser", key="#p0")
-    SvnUser findOne(Integer id);
+    @Cacheable(value="svnPath", key="#p0")
+    SvnPath findOne(Integer id);
 
-    @Cacheable(value="svnUser", key="#p0")
-    List<SvnUser> findAll();
+    @Cacheable(value="svnPath", key="#p0")
+    List<SvnPath> findAll();
 
     boolean exists(Integer id);
 
-    @CacheEvict(value="svnUser", key="#p0.id")
+    @CacheEvict(value="svnPath", key="#p0.id")
     SvnUser save(SvnUser svnUser);
 
 }

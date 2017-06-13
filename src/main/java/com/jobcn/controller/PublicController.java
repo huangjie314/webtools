@@ -22,8 +22,10 @@ public class PublicController {
 
     @Autowired
     private SvnService svnService;
+
     @Autowired
     private SvnUserRepository svnUserRepository;
+
     /**
      * 首页
      *
@@ -32,7 +34,6 @@ public class PublicController {
     @RequestMapping("")
     public String index() {
         return "redirect:/query";
-
     }
 
     /**

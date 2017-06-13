@@ -32,9 +32,10 @@ public class SvnServiceImpl implements SvnService {
     private SvnProperties svnProperties;
 
     @Autowired
+    private SvnPathService svnPathService;
+    @Autowired
     private SvnUserRepository svnUserRepository;
 
-    static private Map<String, Object> setting = null;
     static private Map<String, Object> authors = null;
 
     @Override
@@ -242,9 +243,7 @@ public class SvnServiceImpl implements SvnService {
     }
 
     private List<String> replace(String path) {
-        if (setting == null) {
-            setting = getSetting();
-        }
+        Map<String, Object> setting  = svnPathService.getPathSetting();
         List<String> resultList = new ArrayList();
         for (Map.Entry<String, Object> entry : setting.entrySet()) {
             if (path.startsWith(entry.getKey())) {
