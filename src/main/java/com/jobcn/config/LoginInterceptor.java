@@ -1,5 +1,6 @@
 package com.jobcn.config;
 
+import com.jobcn.Entity.SvnUser;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,6 +37,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         //获取请求的URL
         String url = request.getRequestURI();
         String username =null;
+        String password =null;
+        SvnUser svnUser =null;
         //不拦截静态资源
         if (url.indexOf("js") >= 0||url.indexOf("css") >= 0||url.indexOf("jpg") >= 0) {
             return true;
@@ -49,8 +52,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         //获取Session
         HttpSession session = request.getSession();
         username = (String) session.getAttribute("username");
-
-        if (username != null) {
+        password = (String) session.getAttribute("password");
+        svnUser = (SvnUser) session.getAttribute("svnUser");
+        if (username != null&&password != null&&svnUser!=null) {
             return true;
         }
 

@@ -1,5 +1,7 @@
 package com.jobcn.service;
 
+import com.jobcn.Entity.SvnUser;
+
 import java.util.Map;
 
 /**
@@ -26,4 +28,11 @@ public interface SvnService {
      * @return
      */
     Map<String,Object> query(Integer num, String Path, String username,String password,String start,String end,String author);
+
+    /**
+     * 获取用户的信息,如果没有则添加默认的用户角色
+     * @param id
+     * @return
+     */
+    SvnUser checkUser(Integer id);
 }

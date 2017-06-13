@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Setting</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Svn Tool</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/test.js"></script>
+</head>
+<body>
+<div class="container">
+<button type="button" class="btn btn-warning  btn-lg" id="back" style="float:right">返回</button>
+    <h1>项目路径替换设置</h1>
+    <p>多个路径用分号分割.如/web-person/WEB-INF/classes;/web-employer/WEB-INF/classes</p>
+    <div class="row">
+        <span type="text" th:text="SVN与Email路径">SVN路径</span>
+    </div>
+    <div class="row" th:each="row: ${paths}">
+        <form action="setPath" method="get" class="form-inline">
+            <input type="text" class="form-control" name="id" th:value="${row.id}" style="width:0%;display:none;"/>
+            <input type="text" class="form-control" name="path" th:value="${row.originPath}" style="width: 30%"/>
+            <input type="text" class="form-control" name="replace" th:value="${row.newPath}" style="width: 60%"/>
+            <button type="submit" class="btn btn-default">修改</button>
+        </form>
+    </div>
+    <div class="row">
+        <form action="addPath" method="get" class="form-inline">
+            <input type="text" class="form-control" name="path" style="width: 30%"/>
+            <input type="text" class="form-control" name="replace" style="width: 60%"/>
+            <button type="submit" class="btn btn-default">新增</button>
+        </form>
+    </div>
+
+    <h1>用户权限设置</h1>
+    <div class="row" th:each="row: ${users}">
+        <form action="setUser" method="get" class="form-inline">
+            <input type="text" class="form-control" name="id" th:value="${row.id}" style="width: 30%"/>
+            <input type="text" class="form-control" name="name" th:value="${row.name}" style="width: 30%"/>
+            <input type="text" class="form-control" name="role" th:value="${row.role}" style="width: 30%"/>
+            <button type="submit" class="btn btn-default">修改</button>
+        </form>
+    </div>
+    <div class="row">
+        <form action="setUser" method="get" class="form-inline">
+            <input type="text" class="form-control" name="id" style="width: 30%"/>
+            <input type="text" class="form-control" name="name" style="width: 30%"/>
+            <input type="text" class="form-control" name="role" style="width: 30%"/>
+            <button type="submit" class="btn btn-default">新增</button>
+        </form>
+    </div>
+</div>
+<input type="hidden" id="path" th:value="${path}"/>
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
