@@ -47,6 +47,12 @@ $(document).ready(function () {
     $("#logout").click(function () {
         location.href = "doLogout";
     });
+    $("#setting").click(function () {
+        location.href = "setting";
+    });
+    $("#back").click(function () {
+        location.href = "query";
+    });
 
     $("#search").click(function () {
         var start = $("#start").val();

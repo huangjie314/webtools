@@ -30,6 +30,7 @@
                                                                                       type="date" th:value="${end}"/>
     <button type="button" class="btn btn-success" id="search">Search</button>
     <span style="font-size: x-large;float:right">
+
     <span th:switch="${session.svnUser.role}">
         <span th:case="'Dev'">超级管理员:</span>
         <span th:case="'Admin'">管理员:</span>
@@ -40,15 +41,19 @@
         <span th:case="null"><a href="">设置姓名</a></span>
         <span th:case="*" th:text="${session.svnUser.name}">姓名</span>
     </span>
+            <span th:switch="${session.svnUser.role}">
+        <span th:case="'Admin'"> <button type="button" class="btn btn-warning  btn-lg" id="setting">设置</button></span>
+    </span>
+
     <button type="button" class="btn btn-danger  btn-lg" id="logout">注销</button>
         </span>
 </form>
 <!--<p th:if="${#lists.size(authors)>1}">-->
-    <!--<span th:each="author:${authors}">-->
-        <!--<a th:href="@{/query(author=${author},path=${path})}">-->
-            <!--<button type="button" class="btn btn-default " th:text="${author}">JCNEP</button>-->
-        <!--</a>-->
-    <!--</span>-->
+<!--<span th:each="author:${authors}">-->
+<!--<a th:href="@{/query(author=${author},path=${path})}">-->
+<!--<button type="button" class="btn btn-default " th:text="${author}">JCNEP</button>-->
+<!--</a>-->
+<!--</span>-->
 <!--</p>-->
 <table class="table table-hover">
     <thead>

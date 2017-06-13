@@ -10,8 +10,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +24,7 @@ import java.util.*;
  */
 @Service("svnService")
 public class SvnServiceImpl implements SvnService {
-    private final Logger logger = LoggerFactory.getLogger(SvnServiceImpl.class);
+   // private final Logger logger = LoggerFactory.getLogger(SvnServiceImpl.class);
 
     @Autowired
     private SvnProperties svnProperties;
@@ -37,7 +35,6 @@ public class SvnServiceImpl implements SvnService {
     private SvnUserRepository svnUserRepository;
 
     static private Map<String, Object> authors = null;
-
     @Override
     public boolean login(String author, String password) {
         String cmd = "svn log svn://" + svnProperties.getUrl() + " -l 1 -v --xml";
@@ -106,6 +103,7 @@ public class SvnServiceImpl implements SvnService {
             return map;
         }
         List<Map<String, Object>> list = null;
+
         try {
             list = xml2list(xml);
         } catch (DocumentException e) {

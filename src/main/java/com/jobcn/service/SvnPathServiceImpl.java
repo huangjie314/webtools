@@ -32,10 +32,10 @@ public class SvnPathServiceImpl implements SvnPathService{
         List<SvnPath> list = svnPathRepository.findAll();
         Map map = new HashMap();
         for (SvnPath svnPath:list) {
-            String replace =svnPath.getReplace();
+            String replace =svnPath.getNewPath();
             String[] replaceArr =replace.split(";");
             List replaceList = Arrays.asList(replaceArr);
-            map.put(svnPath.getPath(),replaceList);
+            map.put(svnPath.getOriginPath(),replaceList);
         }
         return map;
     }

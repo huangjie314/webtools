@@ -8,7 +8,7 @@ import javax.persistence.Table;
  * Created by winson on 17-6-12.
  */
 @Entity
-@Table(name="Svn_User")
+@Table(name="svn_user")
 public class SvnUser {
     @Id
     private Integer Id;
